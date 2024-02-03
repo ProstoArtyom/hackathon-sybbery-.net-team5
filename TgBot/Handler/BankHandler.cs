@@ -28,6 +28,8 @@ namespace TgBot.Handler
 
     public async static Task<bool> HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
+      LastActionStorage.Storage[update.Message.Chat.Id].Data = new();
+
       await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id, text: "Выбирите банк", cancellationToken: cancellationToken, replyMarkup: banks);
       LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.GetListCurrency; 
       return true;

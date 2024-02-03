@@ -8,19 +8,16 @@ namespace BankAPI.Models;
 
 public class Rate
 {
-    [Key]
-    public int Cur_ID { get; set; }
-    public DateTime Date { get; set; }
-    public string Cur_Abbreviation { get; set; }
-    public int Cur_Scale { get; set; }
-    public string Cur_Name { get; set; }
-    public decimal? Cur_OfficialRate { get; set; }
-}
+    public decimal SellRate { get; set; }
+    public string SellIso { get; set; }
+    public int SellCode { get; set; }
 
-public class RateShort
-{
-    public int Cur_ID { get; set; }
-    [Key]
-    public System.DateTime Date { get; set; }
-    public decimal? Cur_OfficialRate { get; set; }
+    public decimal BuyRate { get; set; }
+    public string BuyIso { get; set; }
+    public int BuyCode { get; set; }
+
+    public int Quantity { get; set; }
+    public string Name { get; set; }
+
+    public DateTime Date { get; set; }
 }

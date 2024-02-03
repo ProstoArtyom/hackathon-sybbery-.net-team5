@@ -7,5 +7,6 @@ namespace BankAPI.Models
         public string Code { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
+        public IEnumerable<Rate> Rates { get; set; }
     }
 }

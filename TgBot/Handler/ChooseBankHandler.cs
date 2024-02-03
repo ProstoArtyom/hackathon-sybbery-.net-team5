@@ -27,7 +27,7 @@ namespace TgBot.Handler
             {
                 await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Введен неверный банк, возможно, он находится в стадии разработки");
                 storedClient.Action = BankWorker.Getbanks;
-                return true;
+                return false;
             }
 
             // req bank currencies

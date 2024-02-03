@@ -31,6 +31,10 @@ namespace TgBot.Handler
 
             var bankName = storedClient.Data.BankName ?? "";
 
+            // if go back
+            if(!string.IsNullOrEmpty(storedClient.Data.Currency) && ChooseBankHandler.carruncies.Contains(storedClient.Data.Currency))
+                choosedCurrency = storedClient.Data.Currency;
+
             // get bank currencies
             // bank currencies var bankCurr = BankService.GetCurr...(bankName);
             if(!ChooseBankHandler.carruncies.Contains(choosedCurrency))

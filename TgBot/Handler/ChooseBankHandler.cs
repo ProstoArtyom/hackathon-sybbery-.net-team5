@@ -49,7 +49,7 @@ namespace TgBot.Handler
             var ikm = new ReplyKeyboardMarkup(keys){ResizeKeyboard = true};
             await botClient.SendTextMessageAsync(update.Message.Chat.Id, text, replyMarkup: ikm, cancellationToken: cancellationToken);
 
-            storedClient.Data.BankName = choosedBank;
+            storedClient.Data = new(){BankName = choosedBank};
             storedClient.Action = BankWorker.Rate;
             return true;
         }

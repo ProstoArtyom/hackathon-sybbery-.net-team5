@@ -26,8 +26,28 @@ namespace BankAPI.Controllers
             }
         }
 
-        [HttpGet("currenciesByTime")]
-        public async Task<IActionResult> GetCurrencies(DateTime? from = null, DateTime? to = null)
+        [HttpGet("currency/{currencyId}")]
+        public async Task<IActionResult> GetCurrency(int currencyId)
+        {
+            try
+            {
+                var currencies = await GetInfo.GetBBRates(currencyId);
+
+                if (currencies == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(currencies);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred on the server.");
+            }
+        }
+
+        [HttpGet("currenciesByTime/{currencyId}")]
+        public async Task<IActionResult> GetCurrencies(int currencyId, DateTime? from = null, DateTime? to = null)
         {
             try
             {
@@ -40,10 +60,7 @@ namespace BankAPI.Controllers
                     to = DateTime.Now.Date.AddDays(-1);
                 }
 
-                var currencies = await GetInfo.GetCurrencies();
-
-                var newRates = currencies.Where(x => x.Cur_DateStart >= from
-                    && x.Cur_DateEnd <= to).ToList();
+                var currencies = await GetInfo.GetBBRatesByDates(currencyId, from.Value, to.Value);
 
                 if (!currencies.Any())
                 {

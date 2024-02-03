@@ -48,7 +48,7 @@ namespace BankAPI.Services
             return currencies;
         }
 
-        public async void GetNBCurName()
+        public static async void GetNBCurName()
         {
             var serAdd = "https://api.nbrb.by/exrates/currencies";
 
@@ -57,16 +57,16 @@ namespace BankAPI.Services
             request.Headers.Add("User-Agent", "Mozilla Failfox 5.6");
             request.Headers.Add("SecreteCode", "hello");
 
-            using var response = await httpClient.SendAsync(request);
+            using var response = await _httpClient.SendAsync(request);
             var responseText = await response.Content.ReadAsStringAsync();
 
 
 
-            List<CurrencyNB> lis = JsonConvert.DeserializeObject<List<CurrencyNB>>(responseText);
+            List<Currency> lis = JsonConvert.DeserializeObject<List<Currency>>(responseText);
 
 
         }
-        public async void GetNBCurName(string abbreviation)
+        public static async void GetNBCurName(string abbreviation)
         {
             var serAdd = "https://api.nbrb.by/exrates/currencies";
 
@@ -75,14 +75,14 @@ namespace BankAPI.Services
             request.Headers.Add("User-Agent", "Mozilla Failfox 5.6");
             request.Headers.Add("SecreteCode", "hello");
 
-            using var response = await httpClient.SendAsync(request);
+            using var response = await _httpClient.SendAsync(request);
             var responseText = await response.Content.ReadAsStringAsync();
 
 
 
-            List<CurrencyNB> lis = JsonConvert.DeserializeObject<List<CurrencyNB>>(responseText);
+            List<Currency> lis = JsonConvert.DeserializeObject<List<Currency>>(responseText);
             int findId;
-            foreach (CurrencyNB currency in lis)
+            foreach (Currency currency in lis)
             {
                 if (currency.Cur_Abbreviation == abbreviation)
                 {
@@ -99,12 +99,12 @@ namespace BankAPI.Services
             request.Headers.Add("User-Agent", "Mozilla Failfox 5.6");
             request.Headers.Add("SecreteCode", "hello");
 
-            using var secResponse = await httpClient.SendAsync(request);
+            using var secResponse = await _httpClient.SendAsync(request);
             var secResponseText = await response.Content.ReadAsStringAsync();
 
 
         }
-        public async Task<NbrbRate> GetBBRates(int currencyId)
+        public static async Task<NbrbRate> GetBBRates(int currencyId)
         {
             var serAdd = $"https://api.nbrb.by/exrates/rates/{currencyId}";
 
@@ -113,10 +113,27 @@ namespace BankAPI.Services
             request.Headers.Add("User-Agent", "Mozilla Failfox 5.6");
             request.Headers.Add("SecreteCode", "hello");
 
-            using var response = await httpClient.SendAsync(request);
+            using var response = await _httpClient.SendAsync(request);
             var responseText = await response.Content.ReadAsStringAsync();
 
             var lis = JsonConvert.DeserializeObject<NbrbRate>(responseText);
+
+            return lis;
+        }
+
+        public static async Task<List<NbrbRate>> GetBBRatesByDates(int currencyId, DateTime start, DateTime end)
+        {
+            var serAdd = $"https://api.nbrb.by/exrates/rates/dynamics/{currencyId}?startdate={start}&enddate={end}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, serAdd);
+
+            request.Headers.Add("User-Agent", "Mozilla Failfox 5.6");
+            request.Headers.Add("SecreteCode", "hello");
+
+            using var response = await _httpClient.SendAsync(request);
+            var responseText = await response.Content.ReadAsStringAsync();
+
+            var lis = JsonConvert.DeserializeObject<List<NbrbRate>>(responseText);
 
             return lis;
         }

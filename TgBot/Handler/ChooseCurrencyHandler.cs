@@ -14,15 +14,19 @@ namespace TgBot.Handler
         public static async Task<bool> HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var choosedBank = update.Message.Text;
-            var storagedClient = LastActionStorage.Storage[update.Message.Chat.Id];
+            var storedClient = LastActionStorage.Storage[update.Message.Chat.Id];
             // get bank and check if it exists
             //var banks = BankService.GetBanks();
+
+            // check stored value if returned form afterReate ))
+            if(!string.IsNullOrEmpty(storedClient.Data.BankName) && banks.Contains(storedClient.Data.BankName))
+                choosedBank = storedClient.Data.BankName;
 
             // if invalid bank, go to previous step
             if(!banks.Contains(choosedBank))
             {
                 await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Введен неверный банк, введите другой еще раз");
-                storagedClient.Action = BankWorker.Getbanks;
+                storedClient.Action = BankWorker.Getbanks;
                 return true;
             }
 
@@ -31,7 +35,7 @@ namespace TgBot.Handler
             if(carruncies.Count == 0)
             {
                 await botClient.SendTextMessageAsync(update.Message.Chat.Id, "У банка нет валют");
-                storagedClient.Action = BankWorker.Getbanks;
+                storedClient.Action = BankWorker.Getbanks;
                 return false;
             }
 
@@ -45,8 +49,8 @@ namespace TgBot.Handler
             var ikm = new ReplyKeyboardMarkup(keys){ResizeKeyboard = true};
             await botClient.SendTextMessageAsync(update.Message.Chat.Id, text, replyMarkup: ikm, cancellationToken: cancellationToken);
 
-            storagedClient.Data.BankName = choosedBank;
-            storagedClient.Action = BankWorker.Rate;
+            storedClient.Data.BankName = choosedBank;
+            storedClient.Action = BankWorker.Rate;
             return true;
         }
     }

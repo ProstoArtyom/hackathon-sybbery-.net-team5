@@ -39,6 +39,9 @@ namespace TgBot.Handler
                     case BankWorker.Rate:
                         handler = ChooseCurrencyHandler.HandleUpdateAsync;
                         break;
+                    case BankWorker.AfterRate:
+                        handler = AfterRateHandler.HandleUpdateAsync;
+                        break;
                     default:
                         await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Неверный запрос");
                         clientAction.Action = defaultAction;

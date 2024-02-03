@@ -16,16 +16,18 @@ namespace TgBot.Handler
                 LastActionStorage.Storage.Add(update.Message.Chat.Id, new(){Action = defaultAction});
 
             var clientAction = LastActionStorage.Storage[update.Message.Chat.Id];
-            Console.WriteLine(clientAction.Action);
-
             if(update.Message.Text.ToLower() == "/start")
                 clientAction.Action = defaultAction;
             
+            Console.WriteLine(clientAction.Action);
+
             MessageHandler handler = null;
             var messageHandled = false;
 
             while(!messageHandled)
             {
+                handler = null;
+
                 switch(clientAction.Action)
                 {
                     case BankWorker.Getbanks:
@@ -34,11 +36,13 @@ namespace TgBot.Handler
                     case BankWorker.GetListCurrency:
                         handler = ChooseCurrencyHandler.HandleUpdateAsync;
                         break;
-
+                    case BankWorker.Rate:
+                        handler = ChosedCurrencyHandler.HandleUpdateAsync;
+                        break;
                     default:
                         await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Неверный запрос");
                         clientAction.Action = defaultAction;
-                        return;
+                        break;
                 }
                 
                 if(handler != null)

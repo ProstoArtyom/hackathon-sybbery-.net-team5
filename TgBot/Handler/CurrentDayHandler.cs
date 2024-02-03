@@ -12,10 +12,10 @@ namespace TgBot.Handler
 
         private static Dictionary<string, int> currs = new()
         {
-            {"USD", 145},
-            {"EUR", 19},
-            {"GBP", 143},
-            {"JPY", 67},
+            {"USD", 431},
+            {"EUR", 451},
+            {"GBP", 429},
+            {"JPY", 508},
         };
 
         public static async Task<bool> HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)

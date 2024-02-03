@@ -1,6 +1,7 @@
 ﻿using BankAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BankAPI.Controllers
@@ -50,23 +51,24 @@ namespace BankAPI.Controllers
             }
         }
 
-        [HttpGet("{bankName?}/{currencyCode?}/{date?}")]
-        public ActionResult<IEnumerable<Rate>> GetRate(string bankName = "Default Bank", string? currencyCode = null, DateTime? date = null)
+
+        [HttpGet("rate")]
+        public ActionResult<IEnumerable<Rate>> GetRate(string bankName = "Default Bank", string currencyCode = null, DateTime? date = null)
         {
             try
             {
                 if (date == null)
                 {
-                    date = DateTime.Now;
+                    date = DateTime.Now.Date;
                 }
 
                 // TODO: get list of rates
                 IEnumerable<Rate> rates = new List<Rate>
                 {
-                    new() { Cur_ID = 1, Date = DateTime.Now,  },
+                    new() { Cur_ID = 1, Date = DateTime.Now.AddDays(-1),  },
                 };
 
-                rates = rates.Where(x => x.Date == date); // may me issues with data comparison
+                rates = rates.Where(x => x.Date.Date == date).ToList();
                 if (!string.IsNullOrEmpty(currencyCode))
                 {
                     var rate = rates.FirstOrDefault(x => x.Cur_ID.ToString() == currencyCode);
@@ -95,5 +97,4 @@ namespace BankAPI.Controllers
 
 
     }
-
 }

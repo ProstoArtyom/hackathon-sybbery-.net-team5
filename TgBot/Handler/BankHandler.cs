@@ -17,7 +17,7 @@ namespace TgBot.Handler
     {
       new KeyboardButton[]
       {
-        "БелИнвест", "Алфа", "БНБ"
+        "АльфаБанк", "НБРБ", "БеларусБанк"
       } })
     {
 

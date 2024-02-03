@@ -8,50 +8,43 @@ namespace TgBot.Handler
 {
     public class ChooseCurrencyHandler
     {
-        public static List<string> banks = new (){"БелИнвест", "Алфа", "БНБ"};
-        public static List<string> carruncies = new (){"usd","rub","eur"};
-        
-        public static async Task<bool> HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        private static ReplyKeyboardMarkup menu = new(new[]
         {
-            var choosedBank = update.Message.Text;
+            new KeyboardButton[] 
+            {
+                "Курс на текущий день",
+                "Курс на выбранный день",
+                "Собрать статистику",
+            },
+            new KeyboardButton[] 
+            {
+                "Выбрать другой банк",
+                "Выбрать другую валюту"
+            },
+        }
+        ){ResizeKeyboard = true};
+
+       public static async Task<bool> HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+       {
+            var choosedCurrency = update.Message.Text;
             var storedClient = LastActionStorage.Storage[update.Message.Chat.Id];
-            // get bank and check if it exists
-            //var banks = BankService.GetBanks();
 
-            // check stored value if returned form afterReate ))
-            if(!string.IsNullOrEmpty(storedClient.Data.BankName) && banks.Contains(storedClient.Data.BankName))
-                choosedBank = storedClient.Data.BankName;
+            var bankName = storedClient.Data.BankName ?? "";
 
-            // if invalid bank, go to previous step
-            if(!banks.Contains(choosedBank))
+            // get bank currencies
+            // bank currencies var bankCurr = BankService.GetCurr...(bankName);
+            if(!ChooseBankHandler.carruncies.Contains(choosedCurrency))
             {
-                await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Введен неверный банк, введите другой еще раз");
-                storedClient.Action = BankWorker.Getbanks;
-                return true;
-            }
-
-            // req bank currencies
-            // carruncies = BankService.GetCurrenciues(choosedBank);
-            if(carruncies.Count == 0)
-            {
-                await botClient.SendTextMessageAsync(update.Message.Chat.Id, "У банка нет валют");
-                storedClient.Action = BankWorker.Getbanks;
+                await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Введен неправил курс, выберите другой");
+                storedClient.Action = BankWorker.GetListCurrency;
                 return false;
             }
 
-            var text = "Выберите нужную валюту";
-            var keys = new List<KeyboardButton>();
-            for(var i = 0; i < carruncies.Count; i++)
-            {
-                keys.Add(new KeyboardButton(carruncies[i]));
-            }
+            await botClient.SendTextMessageAsync(update.Message.Chat.Id, $"Выбранная валюта: {choosedCurrency}, Выбранный банк: {bankName}", replyMarkup: menu, cancellationToken: cancellationToken);
 
-            var ikm = new ReplyKeyboardMarkup(keys){ResizeKeyboard = true};
-            await botClient.SendTextMessageAsync(update.Message.Chat.Id, text, replyMarkup: ikm, cancellationToken: cancellationToken);
-
-            storedClient.Data.BankName = choosedBank;
-            storedClient.Action = BankWorker.Rate;
+            storedClient.Action = BankWorker.AfterRate;
+            storedClient.Data.Currency = choosedCurrency;
             return true;
-        }
+       }
     }
 }

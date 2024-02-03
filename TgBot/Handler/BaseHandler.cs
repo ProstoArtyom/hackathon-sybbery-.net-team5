@@ -34,10 +34,10 @@ namespace TgBot.Handler
                         handler = BankHandler.HandleUpdateAsync;
                         break;
                     case BankWorker.GetListCurrency:
-                        handler = ChooseCurrencyHandler.HandleUpdateAsync;
+                        handler = ChooseBankHandler.HandleUpdateAsync;
                         break;
                     case BankWorker.Rate:
-                        handler = ChosedCurrencyHandler.HandleUpdateAsync;
+                        handler = ChooseCurrencyHandler.HandleUpdateAsync;
                         break;
                     default:
                         await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Неверный запрос");

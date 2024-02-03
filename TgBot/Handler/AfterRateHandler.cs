@@ -16,19 +16,23 @@ namespace TgBot.Handler
         case "Курс на текущий день":
           LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.CurrentDay;
           break;
-        case "курс на выбранный день":
-          LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.CustomDay;
-          break;
+        case "Курс на выбранный день":
+          //LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.CustomDay;
+          await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Этот функционал еще не реализован");
+          return true;
         case "Собрать статистику":
-          LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.Statistics;
-          break;
+          //LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.Statistics;
+          await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Этот функционал еще не реализован");
+          return true;
         case "Выбрать другой банк":
           LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.Getbanks;
           break;
         case "Выбрать другую валюту":
           LastActionStorage.Storage[update.Message.Chat.Id].Action = BankWorker.GetListCurrency;
           break;
-
+        default:
+          await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Введен неверный ввод");
+          return true;
       }
 
       return false;
